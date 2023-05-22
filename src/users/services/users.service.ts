@@ -35,7 +35,7 @@ export class UsersService {
     const existingUser = await this.userModel.findOne({ email }).exec();
 
     if (existingUser) {
-      return; // or you can return an appropriate response indicating that the email already exists
+      return existingUser; // or you can return an appropriate response indicating that the email already exists
     }
 
     const newUser = new this.userModel(data);
