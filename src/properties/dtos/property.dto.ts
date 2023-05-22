@@ -5,12 +5,9 @@ import {
   IsPositive,
   IsOptional,
   Min,
-  ValidateIf,
-  IsArray,
   IsEmail,
 } from 'class-validator';
 import { PartialType, ApiProperty } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/users/dtos/user.dto';
 
 export class CreatePropertyDto {
   @IsString()
@@ -49,28 +46,32 @@ export class CreatePropertyDto {
   @IsPositive()
   @ApiProperty()
   readonly price: number;
-
-  @IsArray()
-  @IsNotEmpty()
-  readonly creator: string[];
 }
 
 export class UpdatePropertyDto extends PartialType(CreatePropertyDto) {}
 
 export class FilterPropertyDto {
   @IsOptional()
-  @IsPositive()
-  limit: number;
+  @Min(0)
+  _start: number;
 
   @IsOptional()
-  @Min(0)
-  offset: number;
+  @IsPositive()
+  _end: number;
 
   @IsOptional()
-  @Min(0)
-  minPrice: number;
-
-  @ValidateIf((params) => params.minPrice)
   @IsPositive()
-  maxPrice: number;
+  _sort: any;
+
+  @IsOptional()
+  @IsPositive()
+  _order: any;
+
+  @IsOptional()
+  @IsString()
+  title_like: string;
+
+  @IsOptional()
+  @IsString()
+  propertyType: string;
 }

@@ -4,10 +4,10 @@ import { Property } from 'src/properties/entities/property.entity';
 
 @Schema()
 export class User extends Document {
-  @Prop({ type: String, required: true })
+  @Prop({ required: true })
   name: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, unique: true })
   email: string;
 
   @Prop({ type: String, required: true })

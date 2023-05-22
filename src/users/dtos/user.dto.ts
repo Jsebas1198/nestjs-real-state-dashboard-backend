@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  IsOptional,
+  IsPositive,
+  Min,
+} from 'class-validator';
 import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -19,3 +26,13 @@ export class CreateUserDto {
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
+
+export class FilterUserDto {
+  @IsOptional()
+  @IsPositive()
+  _end: number;
+
+  @IsOptional()
+  @Min(0)
+  _start: number;
+}

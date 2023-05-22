@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { HttpService, HttpModule } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module';
 import { PropertiesModule } from './properties/properties.module';
 import { DatabaseModule } from './database/database.module';
 import { environments } from './environments';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CloudinaryService } from './cloudinary/services/cloudinary.service';
 import config from './config';
 
 @Module({
@@ -30,8 +32,9 @@ import config from './config';
     UsersModule,
     PropertiesModule,
     DatabaseModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CloudinaryService],
 })
 export class AppModule {}
