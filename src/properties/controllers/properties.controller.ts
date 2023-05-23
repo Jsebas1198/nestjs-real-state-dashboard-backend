@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Put,
   Param,
   Delete,
   Get,
@@ -11,6 +10,7 @@ import {
   HttpStatus,
   Res,
   Header,
+  Patch,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { PropertiesService } from '../services/properties.service';
@@ -46,7 +46,7 @@ export class PropertiesController {
     return this.propertiesService.create(payload);
   }
 
-  @Put(':productId')
+  @Patch(':productId')
   update(
     @Param('productId', MongoIdPipe) productId: string,
     @Body() payload: UpdatePropertyDto,

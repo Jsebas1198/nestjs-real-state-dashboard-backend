@@ -11,7 +11,6 @@ import { CloudinaryService } from './services/cloudinary.service';
       provide: 'CLOUDINARY',
       useFactory: async (configService: ConfigType<typeof config>) => {
         const { apiKey, apiSecret, cloudName } = configService.cloudinary;
-        console.log(configService.cloudinary);
         cloudinary.config({
           cloud_name: cloudName,
           api_key: apiKey,

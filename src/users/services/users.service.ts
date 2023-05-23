@@ -17,17 +17,15 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const product = await this.userModel.findById(id).exec();
-    if (!product) {
+    const user = await this.userModel
+      .findById(id)
+      .populate('allProperties')
+      .exec();
+    if (!user) {
       throw new NotFoundException(`Product #${id} not found`);
     }
-    return product;
+    return user;
   }
-
-  // create(data: CreateUserDto) {
-  //   const newModel = new this.userModel(data);
-  //   return newModel.save();
-  // }
 
   async create(data: CreateUserDto) {
     const { email } = data;

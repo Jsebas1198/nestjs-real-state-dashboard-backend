@@ -59,7 +59,7 @@ export class PropertiesService {
       .populate('creator')
       .exec();
     if (!property) {
-      throw new NotFoundException(`Product #${id} not found`);
+      throw new NotFoundException(`Property #${id} not found`);
     }
     return property;
   }
@@ -77,8 +77,10 @@ export class PropertiesService {
       photo: photoUrl.url,
       creator: user._id,
     });
-
-    return newProperty.save();
+    const createdProperty = await newProperty.save();
+    user.allProperties.push(createdProperty);
+    await user.save();
+    return createdProperty;
   }
 
   async update(id: string, changes: UpdatePropertyDto) {
@@ -87,25 +89,35 @@ export class PropertiesService {
     if (photo) {
       photoUrl = await this.cloudinaryService.uploadImage(photo);
     }
-    const product = this.propertyModel
+    const Property = this.propertyModel
       .findByIdAndUpdate(
         id,
         { $set: { ...changes, photo: photoUrl?.url ?? photo } },
         { new: true },
       )
       .exec();
-    if (!product) {
+    if (!Property) {
       throw new NotFoundException(`Property ${id} not found`);
     }
-    return product;
+    return Property;
   }
 
   async remove(id: string) {
-    const product = await this.propertyModel.findByIdAndDelete(id);
-    if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
+    const propertyToDelete = await this.propertyModel
+      .findOneAndDelete({ _id: id })
+      .populate('creator');
+
+    if (!propertyToDelete) {
+      throw new NotFoundException('Property not found');
     }
 
-    return product;
+    const user = await this.userModel.findById(propertyToDelete.creator).exec();
+    if (!user) {
+      throw new NotFoundException(`User not found for Property #${id}`);
+    }
+
+    user.allProperties.pull(propertyToDelete._id);
+
+    await user.save();
   }
 }
