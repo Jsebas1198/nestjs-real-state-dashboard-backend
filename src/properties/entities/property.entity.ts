@@ -22,7 +22,7 @@ export class Property extends Document {
   @Prop({ type: String, required: true })
   photo: string;
 
-  @Prop({ type: Types.ObjectId, required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   creator: User | Types.ObjectId;
 }
 

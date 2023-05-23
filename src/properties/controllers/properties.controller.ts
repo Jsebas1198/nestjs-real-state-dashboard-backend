@@ -25,13 +25,16 @@ import { MongoIdPipe } from 'src/common/mongo-id/mongo-id.pipe';
 export class PropertiesController {
   constructor(private propertiesService: PropertiesService) {}
   @Get()
-  @Header('x-total-count', '0') // Set a default value for the header
   @Header('Access-Control-Expose-Headers', 'x-total-count')
   async getProducts(@Query() params: FilterPropertyDto, @Res() res: Response) {
-    const properties = await this.propertiesService.findAll(params);
-    res.set('x-total-count', properties.length.toString());
-    return properties;
+    const { properties, totalCount } = await this.propertiesService.findAll(
+      params,
+    );
+    res.set('x-total-count', totalCount.toString());
+    return res.status(HttpStatus.OK).json(properties);
+    // return properties;
   }
+
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
   getOne(@Param('productId', MongoIdPipe) productId: string) {

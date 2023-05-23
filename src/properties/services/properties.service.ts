@@ -38,25 +38,26 @@ export class PropertiesService {
       filters.title = { $regex: title_like, $options: 'i' };
     }
 
-    try {
-      // const count = await this.propertyModel.countDocuments(filters);
-      // res.setHeader('x-total-count', count.toString());
-      // res.setHeader('Access-Control-Expose-Headers', 'x-total-count');
-      const properties = await this.propertyModel
-        .find(filters)
-        .limit(_end)
-        .skip(_start)
-        .sort({ [_sort]: _order })
-        .exec();
+    const totalCount = await this.propertyModel.countDocuments(filters);
+    const properties = await this.propertyModel
+      .find(filters)
+      .limit(_end)
+      .skip(_start)
+      .sort({ [_sort]: _order })
+      .exec();
 
-      return properties;
-    } catch (e) {
+    if (!properties) {
       throw new NotFoundException('Failed to fetch properties');
     }
+
+    return { properties, totalCount };
   }
 
   async findOne(id: string) {
-    const property = await this.propertyModel.findById(id).exec();
+    const property = await this.propertyModel
+      .findById(id)
+      .populate('creator')
+      .exec();
     if (!property) {
       throw new NotFoundException(`Product #${id} not found`);
     }
@@ -94,7 +95,7 @@ export class PropertiesService {
       )
       .exec();
     if (!product) {
-      throw new NotFoundException(`product ${id} not found`);
+      throw new NotFoundException(`Property ${id} not found`);
     }
     return product;
   }
